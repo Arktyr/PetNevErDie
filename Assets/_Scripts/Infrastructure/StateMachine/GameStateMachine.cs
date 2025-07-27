@@ -4,6 +4,7 @@ using _Scripts.Game.GameStatus;
 using _Scripts.Infrastructure.StateMachine.BaseStates;
 using _Scripts.Infrastructure.StateMachine.Factory;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using Zenject;
 
 namespace _Scripts.Infrastructure.StateMachine
@@ -35,37 +36,24 @@ namespace _Scripts.Infrastructure.StateMachine
 
     public async UniTask Enter<TState>() where TState : class, IState
     {
-       var state = await RequestEnter<TState>()
-         .AttachExternalCancellation(_cts.Token);
-       
+      var state = await RequestChangeState<TState>()
+        .AttachExternalCancellation(_cts.Token);
+      
        EnterState(state);
+       
+       Debug.Log($"GFSM: Entered {typeof(TState).Name}");
     }
 
     public async UniTask Enter<TState, TPayload>(TPayload payload) where TState : class, IPayloadState<TPayload>
     {
-      var state = await RequestEnter<TState, TPayload>()
+      var state = await RequestChangeState<TState>()
         .AttachExternalCancellation(_cts.Token);
       
       EnterPayloadState(state, payload);
+      
+      Debug.Log($"GFSM: Entered {typeof(TState).Name}");
     }
 
-    private async UniTask<TState> RequestEnter<TState>() where TState : class, IState
-    {
-      var state = await RequestChangeState<TState>()
-        .AttachExternalCancellation(_cts.Token);
-      
-      return state;
-    }
-
-    private async UniTask<TState> RequestEnter<TState, TPayload>()
-      where TState : class, IPayloadState<TPayload>
-    {
-      var state = await RequestChangeState<TState>()
-        .AttachExternalCancellation(_cts.Token);
-      
-      return state;
-    }
-    
     private TState EnterState<TState>(TState state) where TState : class, IState
     {
       _activeState = state;

@@ -2,17 +2,23 @@ using System;
 using System.Threading;
 using _Scripts.Infrastructure.StateMachine.BaseStates;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using Zenject;
 
 namespace _Scripts.Infrastructure.StateMachine.Factory
 {
   public class StateFactory : IStateFactory, IDisposable
   {
-    private readonly DiContainer _container;
+    private DiContainer _container;
 
     private readonly CancellationTokenSource _cts = new();
 
     public StateFactory(DiContainer container)
+    {
+      _container = container;
+    }
+
+    public void SetContainer(DiContainer container)
     {
       _container = container;
     }
