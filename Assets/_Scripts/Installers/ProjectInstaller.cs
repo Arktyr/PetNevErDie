@@ -1,6 +1,7 @@
 ﻿using _Scripts.Game.GameStatus;
 using _Scripts.Game.GameTime;
 using _Scripts.Game.GameTime.Provider;
+using _Scripts.Infrastructure.SceneLoader;
 using _Scripts.Infrastructure.StateMachine;
 using _Scripts.Infrastructure.StateMachine.Factory;
 using _Scripts.Infrastructure.StateMachine.States;
@@ -32,6 +33,7 @@ namespace _Scripts.Installers
             Container.BindInterfacesAndSelfTo<GameStatusService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameTimeService>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameTimeProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<SceneLoaderService>().AsSingle();
         }
     }
 }
