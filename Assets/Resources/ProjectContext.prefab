@@ -74,3 +74,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da04506a256d44b384a78edf176ae22e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _allScreensConfig: {fileID: 11400000, guid: d28e5a84e776d524eb3489577911acd5, type: 2}
+  _allScreenLayoutConfigs: {fileID: 11400000, guid: d889dc81b2a78a644993723f2a5bce5c, type: 2}

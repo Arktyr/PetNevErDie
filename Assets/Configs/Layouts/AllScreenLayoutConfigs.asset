@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fa3e276f39443db82b2de491ae952c3, type: 3}
+  m_Name: AllScreenLayoutConfigs
+  m_EditorClassIdentifier: 
+  <Prefab>k__BackingField: {fileID: 1111816922812909235, guid: 9bc06784f9b764342afca91315a0ddd3, type: 3}
+  <ScreenLayoutConfigs>k__BackingField:
+  - {fileID: 11400000, guid: 3c0e0bb644512254482ceff44538f4c9, type: 2}
+  - {fileID: 11400000, guid: 9e95954dc89e90149ac30dd979beee2a, type: 2}
+  - {fileID: 11400000, guid: 016c0e9d5c84aff459269b0bb961a63b, type: 2}

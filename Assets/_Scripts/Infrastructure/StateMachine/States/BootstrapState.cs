@@ -1,4 +1,7 @@
-﻿using _Scripts.Infrastructure.SceneLoader;
+﻿using _Scripts.Common.Providers;
+using _Scripts.Game.UI.Screens;
+using _Scripts.Game.UI.Screens.Custom;
+using _Scripts.Infrastructure.SceneLoader;
 using _Scripts.Infrastructure.StateMachine.BaseStates;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -9,6 +12,8 @@ namespace _Scripts.Infrastructure.StateMachine.States
     public class BootstrapState : IState
     {
         [Inject] private ISceneLoaderService _sceneLoader;
+        [Inject] private ISceneContainersProvider _sceneContainersProvider;
+        [Inject] private IScreenService _screenService;
         
         public UniTask Exit()
         {
@@ -22,8 +27,11 @@ namespace _Scripts.Infrastructure.StateMachine.States
 
         public async UniTask Enter()
         {
-            await _sceneLoader.LoadScene(SceneName.Game);
-            
+            _screenService.TryOpenScreen<LoadScreen>(ScreenOpenHideMode.Immediately, out var screen);
+
+            await UniTask.WaitForSeconds(3);
+
+            _screenService.TryHideAndDestroyScreen<LoadScreen>(ScreenOpenHideMode.Immediately);
         }
     }
 }

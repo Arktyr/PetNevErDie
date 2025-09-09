@@ -1,5 +1,7 @@
-﻿using _Scripts.Infrastructure.Bootstrappers;
+﻿using _Scripts.Common.Providers;
+using _Scripts.Infrastructure.Bootstrappers;
 using _Scripts.Infrastructure.StateMachine.States;
+using UnityEngine;
 using Zenject;
 
 namespace _Scripts.Installers

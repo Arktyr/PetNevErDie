@@ -11,18 +11,9 @@ namespace _Scripts.Infrastructure.Bootstrappers
     public class GameFSMBootstrapper<TInitialState> : IInitializable
         where TInitialState : class, IState
     {
-        private readonly DiContainer _diContainer;
-        private readonly IGameStateMachine _gameStateMachine;
-        private readonly IStateFactory _stateFactory;
-
-        public GameFSMBootstrapper(DiContainer diContainer,
-            IGameStateMachine gameStateMachine, 
-            IStateFactory stateFactory)
-        {
-            _diContainer = diContainer;
-            _gameStateMachine = gameStateMachine;
-            _stateFactory = stateFactory;
-        }
+        [Inject] private readonly DiContainer _diContainer;
+        [Inject] private readonly IGameStateMachine _gameStateMachine;
+        [Inject] private readonly IStateFactory _stateFactory;
 
         public void Initialize()
         {

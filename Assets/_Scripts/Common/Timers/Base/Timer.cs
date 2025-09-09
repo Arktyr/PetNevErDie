@@ -2,29 +2,51 @@
 using System.Threading;
 using System.Timers;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
+using Zenject;
 
 namespace _Scripts.Common
 {
-    public class BaseTimer : IDisposable
+    public class Timer : IDisposable
     {
-        private readonly long _timerDelay;
-        private long _timeTarget;
+        private readonly int _timerDelay;
+        private readonly int _timeTarget;
         
+        private float _timeTicked;
         private CancellationTokenSource _cts;
+        private TimerMode _mode;
         
         public bool IsRunning { get; private set; }
-        public long CurrentTime {get; private set;}
-        
+
+        public float CurrentTime
+        {
+            get
+            {
+                switch (_mode)
+                {
+                    case TimerMode.Rising:
+                        return _timeTicked;
+                    case TimerMode.Decrease:
+                        return _timeTarget - _timeTicked;
+                    default:
+                        return _timeTicked;
+                }
+            }
+        }
+
         public event Action OnCompleteTimer;
         public event Action OnResumeTimer;
         public event Action OnPauseTimer;
         public event Action OnStartTimer;
+        public event Action<float> OnTickedTimer;
 
-        public BaseTimer(long timeTarget = 0, 
-            long timerDelay = 1)
+        public Timer(int timeTarget, 
+            int timerDelay,
+            TimerMode mode)
         {
             _timeTarget = timeTarget;
             _timerDelay = timerDelay;
+            _mode = mode; 
         }
 
         public void StartTimer()
@@ -41,12 +63,6 @@ namespace _Scripts.Common
                 .Forget();
             
             OnStartTimer?.Invoke();
-        }
-
-        public void StartInfinityTimer()
-        {
-            _timeTarget = long.MaxValue;
-            StartTimer();
         }
 
         public void ResumeTimer()
@@ -96,13 +112,15 @@ namespace _Scripts.Common
                 await UniTask.WaitForSeconds(_timerDelay)
                     .AttachExternalCancellation(_cts.Token);
                 
-                CurrentTime += _timerDelay;
+                _timeTicked += _timerDelay;
+                
+                OnTickedTimer?.Invoke(CurrentTime);
             }
         }
 
         private void CompleteTimer()
         {
-            KillTimer();
+            IsRunning = false;
             OnCompleteTimer?.Invoke();
         }
 
@@ -120,7 +138,7 @@ namespace _Scripts.Common
             _cts?.Cancel();
             _cts?.Dispose();
             _cts = null;
-            CurrentTime = 0;
+            _timeTicked = 0;
             IsRunning = false;
         }
 

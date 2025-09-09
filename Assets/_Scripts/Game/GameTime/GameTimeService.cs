@@ -1,28 +1,37 @@
 ﻿using System;
 using _Scripts.Common;
 using _Scripts.Game.GameStatus;
+using Zenject;
 
 namespace _Scripts.Game.GameTime
 {
     public class GameTimeService : IDisposable, IGameTimeService
     {
-        private readonly BaseTimer _activeTimeTimer = new BaseTimer();
-        private readonly BaseTimer _totalTimeTimer = new BaseTimer();
-        
-        private readonly IGameStatusService _gameStatusService;
+        [Inject] private readonly IGameStatusService _gameStatusService;
+        [Inject] private readonly ITimerService _timerService;
 
-        public GameTimeService(IGameStatusService gameStatusService)
+        public TimeSpan TotalActiveTimePlayed()
         {
-            _gameStatusService = gameStatusService;
+            if (_timerService.TryGetTimer(TimerConstants.TimerActivePlayTime, out var timer) == false)
+                return TimeSpan.Zero;
+            
+            return TimeSpan.FromSeconds(timer.CurrentTime);
         }
 
-        public TimeSpan TotalActiveTimePlayed() => TimeSpan.FromSeconds(_activeTimeTimer.CurrentTime);
-        public TimeSpan TotalTimePlayed() => TimeSpan.FromSeconds(_totalTimeTimer.CurrentTime);
+        public TimeSpan TotalTimePlayed()
+        {
+            if (_timerService.TryGetTimer(TimerConstants.TimerTotalPlayTime, out var timer) == false)
+                return TimeSpan.Zero;
+            
+            return TimeSpan.FromSeconds(timer.CurrentTime);
+        }
 
         public void Initialize()
         {
             _gameStatusService.OnChangeGameStatus += SetGameTimer;
-            _totalTimeTimer.StartInfinityTimer();
+
+            _timerService.StartTimer(TimerConstants.TimerTotalPlayTime, 1, Int32.MaxValue, TimerMode.Rising);
+            _timerService.StartTimer(TimerConstants.TimerActivePlayTime, 1, Int32.MaxValue, TimerMode.Rising);
         }
 
         private void SetGameTimer(GameStatus.GameStatus status)
@@ -30,30 +39,22 @@ namespace _Scripts.Game.GameTime
             switch (status)
             {
                 case GameStatus.GameStatus.Idle:
-                    PauseActiveGameTimer();
-                    break;
                 case GameStatus.GameStatus.Pause:
-                    PauseActiveGameTimer();
+                    _timerService.PauseTimer(TimerConstants.TimerActivePlayTime);
                     break;
                 case GameStatus.GameStatus.Run:
-                    ResumeActiveGameTimer();
+                    _timerService.ResumeTimer(TimerConstants.TimerActivePlayTime);
                     break;
                 default:
-                    PauseActiveGameTimer();
+                    _timerService.PauseTimer(TimerConstants.TimerTotalPlayTime);
                     return;
             }
         }
 
-        private void ResumeActiveGameTimer() => 
-            _activeTimeTimer.RestartTimer();
-
-        private void PauseActiveGameTimer() => 
-            _activeTimeTimer.PauseTimer();
-
         public void Dispose()
         {
-            _activeTimeTimer?.Dispose();
-            _totalTimeTimer?.Dispose();
+            _timerService.StopTimer(TimerConstants.TimerActivePlayTime);
+            _timerService.StopTimer(TimerConstants.TimerTotalPlayTime);
             
             _gameStatusService.OnChangeGameStatus -= SetGameTimer;
         }
