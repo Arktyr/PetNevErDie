@@ -27,11 +27,11 @@ namespace _Scripts.Infrastructure.StateMachine.States
 
         public async UniTask Enter()
         {
-            _screenService.TryOpenScreen<LoadScreen>(ScreenOpenHideMode.Immediately, out var screen);
+            _screenService.TryOpenScreen<LoadScreen>(ScreenOpenHideMode.Animated, out var screen);
 
             await UniTask.WaitForSeconds(3);
 
-            _screenService.TryHideAndDestroyScreen<LoadScreen>(ScreenOpenHideMode.Immediately);
+            _screenService.TryHideAndDestroyScreen<LoadScreen>(ScreenOpenHideMode.Animated);
         }
     }
 }

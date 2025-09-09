@@ -36,7 +36,6 @@ namespace _Scripts.Game.UI.Screens.Provider
 
             layout.AddScreen(baseScreen);
             baseScreen.OnDestroy += OnDestroyScreen;
-            Debug.LogError("sub");
         }
 
         private void OnDestroyScreen(BaseScreen screen)
@@ -52,10 +51,8 @@ namespace _Scripts.Game.UI.Screens.Provider
             layout.RemoveScreen(baseScreen);
             baseScreen.OnDestroy -= OnDestroyScreen;
 
-            Debug.LogError("dest");
             if (layout.Screens.Count > 0)
                 return;
-            Debug.LogError("dest");
             
             layout.DestroyLayout();
             _screenLayouts.Remove(baseScreen.ScreenLayoutType);

@@ -16,6 +16,8 @@ namespace _Scripts.Game.UI.Screens
         public event Action<BaseScreen> OnHide;
         public event Action<BaseScreen> OnDestroy;
         
+        public bool IsAnimating { get; private set; }
+        
         public void Setup(ScreenLayoutType layoutType)
         {
             ScreenLayoutType = layoutType;
@@ -32,8 +34,9 @@ namespace _Scripts.Game.UI.Screens
                     if (_screenAnimation == null)
                         break;
                     
+                    IsAnimating = true;
                     await _screenAnimation.PlayShow(this.transform);
-                    
+                    IsAnimating = false;
                     break;
                 case ScreenOpenHideMode.Immediately:
                     break;
@@ -50,7 +53,13 @@ namespace _Scripts.Game.UI.Screens
             switch (mode)
             {
                 case ScreenOpenHideMode.Animated:
+                    
+                    if (_screenAnimation == null)
+                        break;
+                    
+                    IsAnimating = true;
                     await _screenAnimation.PlayHide(this.transform);
+                    IsAnimating = false;
                     break;
                 case ScreenOpenHideMode.Immediately:
                     break;

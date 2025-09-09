@@ -48,11 +48,13 @@ namespace _Scripts.Game.UI.Screens
             return true;
         }
         
-        public bool TryHideAndDestroyScreen<T>(ScreenOpenHideMode mode) where T : BaseScreen
+        public async UniTask<bool> TryHideAndDestroyScreen<T>(ScreenOpenHideMode mode) where T : BaseScreen
         {
             if (TryHideScreen<T>(mode, out var screen ) == false)
                 return false;
 
+            await UniTask.WaitUntil(() => screen.IsAnimating == false);
+            
             screen.Destroy();
             
             return true;
