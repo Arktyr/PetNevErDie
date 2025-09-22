@@ -20,8 +20,11 @@ namespace _Scripts.Game.UI.Screens
             screen = null;
             BaseScreen findScreen = _currentOpenScreens.Find(screen => screen is T);
 
-            if (findScreen != null) 
-                TryHideAndDestroyScreen<T>(ScreenOpenHideMode.Immediately);
+            if (findScreen != null)
+            {
+                screen = findScreen as T;
+                return true;
+            }
             
             if (_screenFactory.TryCreate<T>(out var newScreen) == false)
                 return false;
@@ -30,7 +33,8 @@ namespace _Scripts.Game.UI.Screens
                 .AttachExternalCancellation(_cts.Token);
             
             _currentOpenScreens.Add(newScreen);
-            return newScreen;
+            screen = newScreen;
+            return true;
         }
         
         public bool TryHideScreen<T>(ScreenOpenHideMode mode, out T screen) where T : BaseScreen
